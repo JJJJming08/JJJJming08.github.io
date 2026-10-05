@@ -212,5 +212,98 @@
 
 
   </div>
-</body>
+<!-- hexo injector body_end start -->
+<script src="/js/qrcode.js"></script>
+<style>
+/* 微博红 / QQ蓝 / QQ空间黄 / 微信绿 —— hover 配色 */
+.article-share-weibo:hover { background: #e6162d !important; text-shadow: 0 1px #b00 !important; }
+.article-share-qq:hover { background: #12b7f5 !important; text-shadow: 0 1px #0891d1 !important; }
+.article-share-qzone:hover { background: #ffce00 !important; text-shadow: 0 1px #d90 !important; }
+.article-share-qzone:hover .fa { color: #fff !important; }
+.article-share-wechat:hover { background: #07c160 !important; text-shadow: 0 1px #059a48 !important; }
+/* 二维码面板 */
+.article-share-box .qr-wrap { display: none; padding: 14px 14px 10px; text-align: center; border-top: 1px solid #eee; background: #fff; }
+.article-share-box .qr-wrap.on { display: block; }
+.article-share-box .qr-wrap img,
+.article-share-box .qr-wrap canvas { max-width: 100%; width: 128px; height: 128px; display: block; margin: 0 auto 6px; border: 1px solid #f0f0f0; padding: 4px; background: #fff; }
+.article-share-box .qr-wrap p { margin: 0; font-size: 12px; color: #999; }
+</style>
+<script>
+(function () {
+  var ready = function (fn) {
+    if (document.readyState !== 'loading') { setTimeout(fn, 0); }
+    else { document.addEventListener('DOMContentLoaded', fn); }
+  };
+
+  ready(function () {
+    var $ = window.jQuery;
+    if (!$) return;
+
+    // 解绑主题的国外平台分享（绑在 body 上的委托事件），换成国内平台
+    $('body').off('click', '.article-share-link');
+
+    $('body').on('click', '.article-share-link', function (e) {
+      e.stopPropagation();
+
+      var $this = $(this),
+          url = $this.attr('data-url'),
+          title = $this.attr('data-title') || document.title,
+          encodedUrl = encodeURIComponent(url),
+          encodedTitle = encodeURIComponent(title),
+          id = 'article-share-box-' + $this.attr('data-id'),
+          offset = $this.offset();
+
+      var html =
+        '<div id="' + id + '" class="article-share-box">' +
+          '<input class="article-share-input" value="' + url + '">' +
+          '<div class="article-share-links">' +
+            '<a href="https://service.weibo.com/share/share.php?url=' + encodedUrl + '&title=' + encodedTitle + '" class="article-share-weibo" target="_blank" title="分享到微博"><span class="fa fa-weibo"></span></a>' +
+            '<a href="https://connect.qq.com/widget/shareqq/index.html?url=' + encodedUrl + '&title=' + encodedTitle + '&summary=' + encodedTitle + '" class="article-share-qq" target="_blank" title="分享给QQ好友"><span class="fa fa-qq"></span></a>' +
+            '<a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + encodedUrl + '&title=' + encodedTitle + '" class="article-share-qzone" target="_blank" title="分享到QQ空间"><span class="fa fa-star"></span></a>' +
+            '<a href="javascript:;" class="article-share-wechat" title="微信扫码分享"><span class="fa fa-wechat"></span></a>' +
+          '</div>' +
+          '<div class="qr-wrap"><div class="qr-img"></div><p>微信扫一扫，分享到朋友圈</p></div>' +
+        '</div>';
+
+      var box = $('#' + id);
+      if (!box.length) {
+        box = $(html).appendTo('body');
+      }
+
+      if (box.hasClass('on')) {
+        box.removeClass('on');
+        return;
+      }
+
+      $('.article-share-box.on').removeClass('on');
+      box.css({ top: offset.top + 25, left: offset.left }).addClass('on');
+    });
+
+    // 微信：点击生成/显示二维码
+    $('body').on('click', '.article-share-wechat', function (e) {
+      e.stopPropagation();
+      var $box = $(this).closest('.article-share-box');
+      var wrap = $box.find('.qr-wrap');
+      var url = $box.find('.article-share-input').val();
+      if (!wrap.find('img, canvas').length && window.qrcode) {
+        try {
+          var qr = window.qrcode(0, 'M');
+          qr.addData(url);
+          qr.make();
+          wrap.find('.qr-img').append(qr.createImgTag(4, 8));
+        } catch (err) {
+          wrap.find('.qr-img').text('二维码生成失败');
+        }
+      }
+      wrap.toggleClass('on');
+    });
+
+    // 点击链接框自动全选，方便复制
+    $('body').on('click', '.article-share-input', function () {
+      this.select();
+    });
+  });
+})();
+</script>
+<!-- hexo injector body_end end --></body>
 </html>
