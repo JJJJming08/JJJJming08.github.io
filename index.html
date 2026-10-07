@@ -73,6 +73,140 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-encoder-tool" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/10/07/encoder-tool/" class="article-date">
+  <time class="dt-published" datetime="2026-10-07T02:50:00.000Z" itemprop="datePublished">2026-10-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%B7%A5%E5%85%B7%E7%AE%B1/">工具箱</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/10/07/encoder-tool/">编解码工具上线：一键识别，密文秒解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>博客 <a href="/tools/">工具箱</a> 里又添了一个新工具：<strong>编解码工具</strong>。</p>
+<p><a target="_blank" rel="noopener" href="https://code-decoder-tftrf289wjt.qoder.zone/">https://code-decoder-tftrf289wjt.qoder.zone/</a></p>
+<h2 id="为什么做"><a href="#为什么做" class="headerlink" title="为什么做"></a>为什么做</h2><p>调接口、抓包、翻别人网页的时候，经常会遇到一堆看不懂的东西：一串 <code>eyJhbGciOi...</code>、一段 <code>%E4%BD%A0%E5%A5%BD</code>、一坨看着像乱码的 <code>48656c6c6f</code>。它们其实是 Base64、URL 编码、十六进制，只是换了层皮。</p>
+<p>市面上的在线解码站点大多有两个问题：<strong>要把内容上传到别人的服务器</strong>（涉密的 Token、Cookie、内部数据贴上去就等于交出去了），以及<strong>得自己猜编码类型</strong>——试 Base64 不行再试 URL，猜错了就白折腾。</p>
+<p>所以自己写了一个放在博客里，核心就两点：<strong>纯本地跑，不联网</strong>；<strong>不用猜，一键自动识别</strong>。</p>
+<h2 id="它做到了什么"><a href="#它做到了什么" class="headerlink" title="它做到了什么"></a>它做到了什么</h2><p>支持 11 种编解码方式，双向可用：</p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>典型长相</th>
+<th>常见场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Base64</td>
+<td><code>eyJhbGciOiJIUzI1NiJ9</code></td>
+<td>JWT、接口返回、图片内嵌</td>
+</tr>
+<tr>
+<td>Base32</td>
+<td><code>MFRGGZDFMZTWQ2LK</code></td>
+<td>二维码、邮件验证码</td>
+</tr>
+<tr>
+<td>Hex</td>
+<td><code>48656c6c6f</code></td>
+<td>抓包、二进制文件头</td>
+</tr>
+<tr>
+<td>URL</td>
+<td><code>%E4%BD%A0%E5%A5%BD</code></td>
+<td>中文转义、链接参数</td>
+</tr>
+<tr>
+<td>Unicode</td>
+<td><code>\u4f60\u597d</code></td>
+<td>JSON 里的中文</td>
+</tr>
+<tr>
+<td>ROT13</td>
+<td><code>Uryyb</code></td>
+<td>简单字母替换</td>
+</tr>
+<tr>
+<td>Morse</td>
+<td><code>-... -.-- .-. --- ..-</code></td>
+<td>老式电码</td>
+</tr>
+<tr>
+<td>二进制</td>
+<td><code>01001000 01101001</code></td>
+<td>计算机基础</td>
+</tr>
+<tr>
+<td>GZip</td>
+<td>乱码开头</td>
+<td>压缩数据</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td><code>&amp;amp; &amp;lt;</code></td>
+<td>网页实体</td>
+</tr>
+<tr>
+<td>JSON</td>
+<td><code>{&quot;key&quot;: &quot;value&quot;}</code></td>
+<td>格式化&#x2F;压缩</td>
+</tr>
+</tbody></table>
+<p>几个用起来比较爽的点：</p>
+<ul>
+<li><strong>一键智能识别</strong>：不指定方式，它会把所有解码方式都试一遍，按<strong>结果可读性排序</strong>，靠谱的那条直接标「可读性高」。省掉逐个试的过程。</li>
+<li><strong>双向</strong>：不是只能解，也能编。改个参数、造个测试数据都用得上。</li>
+<li><strong>支持大文件</strong>：「打开文件…」能直接读本地文件，不用先复制粘贴。</li>
+<li><strong>结果可留档</strong>：导出全部结果为 TXT；导出 JSON 会带上方式名称、时间、输入、输出，适合排查问题时留证据。</li>
+<li><strong>纯本地运行，数据不离开浏览器</strong> —— 这是我最在意的一点。</li>
+</ul>
+<h2 id="怎么用"><a href="#怎么用" class="headerlink" title="怎么用"></a>怎么用</h2><ol>
+<li>进 <a href="/tools/">工具箱</a> 在页面内直接用，粘贴内容点「一键智能识别解码」；</li>
+<li>或直接打开：<a target="_blank" rel="noopener" href="https://code-decoder-tftrf289wjt.qoder.zone/">https://code-decoder-tftrf289wjt.qoder.zone/</a></li>
+</ol>
+<p>三个按钮顺手用一下：<strong>从剪贴板粘贴</strong>（省得手动找）、<strong>清空</strong>（别留敏感数据在页面上）、<strong>清除结果</strong>。</p>
+<blockquote>
+<p>顺带提醒：即使工具本身不联网，粘贴进去的内容仍然会留在浏览器内存里。用完记得点「清空」。</p>
+</blockquote>
+<h2 id="一点碎碎念"><a href="#一点碎碎念" class="headerlink" title="一点碎碎念"></a>一点碎碎念</h2><p>做这个工具的时候，最花时间的不是各个编解码算法本身——那些都是标准实现，写起来很顺——而是**「智能识别」的排序逻辑**。</p>
+<p>因为 Base64 和 Base32 的字符集高度重叠，一段短字符串经常能同时被两种方式「成功」解出，但只有一个是对的。所以不能只看「解出来了没有」，还得看<strong>解出来的内容像不像人话</strong>：可打印字符比例、中文占比、有没有奇怪的替换字符（<code>�</code>），综合打个分再排序。</p>
+<p>这大概是「能跑」和「好用」之间差距最明显的一个地方。</p>
+<p>工具箱慢慢在填了。目前两个：密码生成器、编解码工具。后面遇到什么顺手的小需求就继续往里塞。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://jjjjming08.github.io/2026/10/07/encoder-tool/" data-id="cuidYy_ONSeqxi8_v7ZgvCFIN" data-title="编解码工具上线：一键识别，密文秒解" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%88%E7%8E%87/" rel="tag">效率</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BC%96%E8%A7%A3%E7%A0%81/" rel="tag">编解码</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-random-password-generator" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2026/10/05/random-password-generator/" class="article-date">
@@ -211,7 +345,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%86%E7%A0%81%E5%AE%89%E5%85%A8/" rel="tag">密码安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%86%E7%A0%81%E5%AE%89%E5%85%A8/" rel="tag">密码安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag">工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%88%E7%8E%87/" rel="tag">效率</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BC%96%E8%A7%A3%E7%A0%81/" rel="tag">编解码</a></li></ul>
     </div>
   </div>
 
@@ -221,7 +355,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/%E5%AF%86%E7%A0%81%E5%AE%89%E5%85%A8/" style="font-size: 10px;">密码安全</a> <a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 10px;">工具</a>
+      <a href="/tags/%E5%AF%86%E7%A0%81%E5%AE%89%E5%85%A8/" style="font-size: 10px;">密码安全</a> <a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 20px;">工具</a> <a href="/tags/%E6%95%88%E7%8E%87/" style="font-size: 10px;">效率</a> <a href="/tags/%E7%BC%96%E8%A7%A3%E7%A0%81/" style="font-size: 10px;">编解码</a>
     </div>
   </div>
 
@@ -241,6 +375,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2026/10/07/encoder-tool/">编解码工具上线：一键识别，密文秒解</a>
+          </li>
         
           <li>
             <a href="/2026/10/05/random-password-generator/">随机密码生成器上线 &amp; 我的工具箱</a>
